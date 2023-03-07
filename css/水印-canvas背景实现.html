@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>水印canvas输出背景图</title>
+  <style>
+    #table-info{
+      /* background-color: yellow; */
+      position:relative
+    }
+    table tr{
+      text-align: center;
+    }
+    th,td{
+      width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div id="table-info">
+    <table>
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>名称</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="text-align: center;">
+          <td>11</td>
+          <td>疯狂星期四</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>疯狂星期四</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>疯狂星期四</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>疯狂星期四</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>疯狂星期四</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <script>
+    function _canvasWM({
+                container = document.body,
+                width = '400px',
+                height = '100px',
+                filter="blur(0.3px)",
+                textAlign = 'top',
+                textBaseline = 'top',
+                font = "18px Microsoft Yahei",
+                fillStyle = 'rgba(184, 184, 184, 0.4)',
+                content = '水印',
+                rotate = '-15',
+                zIndex = 10000
+              } = {}){
+          // 获取传参
+          const args = arguments[0];
+          // 创建canvas画布
+          const canvas = document.createElement("canvas");
+          canvas.setAttribute('width',width);
+          canvas.setAttribute('height',height);
+          // 获取canvas上下文
+          const ctx = canvas.getContext('2d');
+          ctx.textAlign = textAlign;
+          ctx.textBaseline = textBaseline;
+          ctx.font = font;
+          ctx.filter = filter;
+          ctx.fillStyle = fillStyle;
+          ctx.rotate(Math.PI/180*rotate)
+          ctx.fillText(content,50,100,320);
+          // 获取改canvas展示的dataUri 通过base64编码
+          const base64Url = canvas.toDataURL()
+          // 创建一个元素来挂载这个canvas
+          const _wm = document.querySelector('._wm')
+          const watermarkDiv = _wm || document.createElement('div')
+          const styleStr = `
+                  position:absolute;
+                  top:0;
+                  left:0;
+                  bottom:0;
+                  right:0;
+                  width:100%;
+                  height:100%;
+                  z-index:${zIndex};
+                  pointer-events:none;
+                  background-repeat:repeat;
+                  background-image:url('${base64Url}')`;
+          watermarkDiv.setAttribute('style',styleStr);
+          const containerFirstChild = container.firstElementChild
+          if(!containerFirstChild.classList.contains("_wm")){
+            watermarkDiv.classList.add('_wm');
+            container.insertBefore(watermarkDiv, container.firstChild);
+          }
+    }
+    // 导出
+    // if (typeof module != 'undefined' && module.exports) {  //CMD
+    //     module.exports = __canvasWM;
+    //   } else if (typeof define == 'function' && define.amd) { // AMD
+    //       define(function () {
+    //         return __canvasWM;
+    //       });
+    // } else {
+    //       window.__canvasWM = __canvasWM;
+    // }
+    _canvasWM({content:"hongjiapeng(hongjiapeng@shoplineapp.com)",container:document.getElementById('table-info')})
+  </script>
+</body>
+</html>

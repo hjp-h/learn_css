@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <button onclick="createEyeDropper()">点击取色</button>
+        <div>
+            <label>您选的颜色是：</label>
+            <span id="TXT"></span>
+        </div>
+
+        <script>
+            if (window && "EyeDropper" in window) {
+                const EYEDROPPER = new window.EyeDropper();
+                const TXT = document.getElementById("TXT");
+
+                function createEyeDropper() {
+                    EYEDROPPER.open().then((res) => {
+                        TXT.innerText = res.sRGBHex;
+                    });
+                }
+            } else {
+                alert("浏览器不支持！");
+            }
+        </script>
+    </body>
+</html>
